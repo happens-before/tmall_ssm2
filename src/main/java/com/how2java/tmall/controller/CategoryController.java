@@ -18,7 +18,7 @@ public class CategoryController {
     @RequestMapping("admin_category_list")
     public String list(Model model){
         List<Category> cs= categoryService.list();
-        model.addAttribute("cs", cs);
+        model.addAttribute("cs", cs);//填充Jsp代码中的变量
         return "admin/listCategory";
     }
 }
