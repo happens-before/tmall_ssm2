@@ -53,7 +53,9 @@ function checkInt(id, name){
 	return true;
 }
 
-
+/**
+ * 对所有的删除连接都进行了监听
+ */
 $(function(){
 	$("a").click(function(){
 		var deleteLink = $(this).attr("deleteLink");
