@@ -1,5 +1,11 @@
 package com.how2java.tmall.util;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * @author: zhaowanyue
  * @date: 2018/6/3
