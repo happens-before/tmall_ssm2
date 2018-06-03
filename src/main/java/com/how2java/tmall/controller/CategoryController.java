@@ -52,4 +52,10 @@ public class CategoryController {
         file.delete();
         return "redirect:admin_category_list";
     }
+    @RequestMapping("admin_category_edit")
+    public String edit(int id,Model model) throws IOException {
+        Category c= categoryService.get(id);
+        model.addAttribute("c", c);
+        return "admin/editCategory";
+    }
 }
