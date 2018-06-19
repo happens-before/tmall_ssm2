@@ -1,5 +1,7 @@
 package com.how2java.tmall.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.how2java.tmall.pojo.Category;
 import com.how2java.tmall.service.CategoryService;
 import com.how2java.tmall.util.ImageUtil;
@@ -24,15 +26,25 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
+//    @RequestMapping("admin_category_list")
+//    public String list(Model model,Page page){
+//        List<Category> cs= categoryService.list(page);
+//        int total=categoryService.total();
+//        page.setTotal(total);
+//        model.addAttribute("cs", cs);//填充Jsp代码中的变量
+//        model.addAttribute("page",page);
+//        return "admin/listCategory";
+//    }
     @RequestMapping("admin_category_list")
     public String list(Model model,Page page){
-        List<Category> cs= categoryService.list(page);
-        int total=categoryService.total();
-        page.setTotal(total);
-        model.addAttribute("cs", cs);//填充Jsp代码中的变量
-        model.addAttribute("page",page);
-        return "admin/listCategory";
-    }
+    PageHelper.offsetPage(page.getStart(),page.getCount());
+    List<Category> cs= categoryService.list();
+    int total = (int) new PageInfo<>(cs).getTotal();
+    page.setTotal(total);
+    model.addAttribute("cs", cs);
+    model.addAttribute("page", page);
+    return "admin/listCategory";
+}
     @RequestMapping("admin_category_add")
     public String add(Category c, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
         categoryService.add(c);

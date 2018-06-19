@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.how2java.tmall</groupId>
-  <artifactId>tmall_ssm</artifactId>
+  <artifactId>tmall_ssm2</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
 
@@ -150,6 +150,12 @@
       <artifactId>commons-lang</artifactId>
       <version>${commons-lang.version}</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>5.1.4</version>
+    </dependency>
 
     <dependency>
       <groupId>aopalliance</groupId>
@@ -161,6 +167,12 @@
       <groupId>org.mybatis.generator</groupId>
       <artifactId>mybatis-generator-core</artifactId>
       <version>${mybatis-generator.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.lindzh/mybatis-generator -->
+    <dependency>
+      <groupId>com.lindzh</groupId>
+      <artifactId>mybatis-generator</artifactId>
+      <version>1.0.3</version>
     </dependency>
 
   </dependencies>
