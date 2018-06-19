@@ -1,19 +1,25 @@
 package com.how2java.tmall.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.how2java.tmall.pojo.Category;
 import com.how2java.tmall.service.CategoryService;
 import com.how2java.tmall.util.ImageUtil;
 import com.how2java.tmall.util.Page;
+import com.how2java.tmall.util.ResponseUtil;
 import com.how2java.tmall.util.UploadedImageFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,62 +32,57 @@ public class CategoryController {
     @Autowired
     CategoryService categoryService;
 
-//    @RequestMapping("admin_category_list")
-//    public String list(Model model,Page page){
-//        List<Category> cs= categoryService.list(page);
-//        int total=categoryService.total();
-//        page.setTotal(total);
-//        model.addAttribute("cs", cs);//填充Jsp代码中的变量
-//        model.addAttribute("page",page);
-//        return "admin/listCategory";
-//    }
-    @RequestMapping("admin_category_list")
-    public String list(Model model,Page page){
+    @RequestMapping(value="admin_category_list",method = RequestMethod.POST)
+    @ResponseBody
+    public List<Category> list(Page page){
     PageHelper.offsetPage(page.getStart(),page.getCount());
     List<Category> cs= categoryService.list();
     int total = (int) new PageInfo<>(cs).getTotal();
     page.setTotal(total);
-    model.addAttribute("cs", cs);
-    model.addAttribute("page", page);
-    return "admin/listCategory";
+    return cs;
 }
-    @RequestMapping("admin_category_add")
-    public String add(Category c, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
+    @RequestMapping(value = "admin_category_add",method = RequestMethod.POST)
+    @ResponseBody
+    public Category add(Category c, HttpSession session, @RequestParam("uploadedImageFile") MultipartFile uploadedImageFile) throws IOException {
         categoryService.add(c);
         File imageFolder= new File(session.getServletContext().getRealPath("img/category"));
         File file = new File(imageFolder,c.getId()+".jpg");
         if(!file.getParentFile().exists())
             file.getParentFile().mkdirs();
-        uploadedImageFile.getImage().transferTo(file);
+        uploadedImageFile.transferTo(file);
         BufferedImage img = ImageUtil.change2jpg(file);
         ImageIO.write(img, "jpg", file);
-        return "redirect:/admin_category_list";
+        return c;
     }
-    @RequestMapping("admin_category_delete")
-    public String delete(int id,HttpSession session) throws IOException{
+    @RequestMapping(value = "admin_category_delete",method = RequestMethod.POST)
+    @ResponseBody
+    public String delete(@RequestParam("id") int id, HttpSession session, HttpServletResponse response) throws Exception{
         categoryService.delete(id);
         File imageFolder=new File(session.getServletContext().getRealPath("img/cateage"));
         File file=new File(imageFolder,id+".jpg");
         file.delete();
-        return "redirect:admin_category_list";
+        JSONObject result=new JSONObject();
+        result.put("success","ok");
+        ResponseUtil.write(response,result);
+        return null;
     }
-    @RequestMapping("admin_category_edit")
-    public String edit(int id,Model model) throws IOException {
+    @RequestMapping(value = "admin_category_findById",method = RequestMethod.POST)
+    @ResponseBody
+    public Category FindById(@RequestParam("id") int id) throws IOException {
         Category c= categoryService.get(id);
-        model.addAttribute("c", c);
-        return "admin/editCategory";
+        return c;
     }
-    @RequestMapping("admin_category_update")
-    public String update(Category c, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
+    @RequestMapping(value = "admin_category_update",method = RequestMethod.POST)
+    @ResponseBody
+    public Category update(Category c, HttpSession session, @RequestParam("uploadedImageFile") MultipartFile uploadedImageFile) throws IOException {
         categoryService.update(c);
-        MultipartFile image = uploadedImageFile.getImage();
-        if(null!=image &&!image.isEmpty()){
+        if(null!=uploadedImageFile &&!uploadedImageFile.isEmpty()){
             File  imageFolder= new File(session.getServletContext().getRealPath("img/category"));
             File file = new File(imageFolder,c.getId()+".jpg");
-            image.transferTo(file);
+            uploadedImageFile.transferTo(file);
             BufferedImage img = ImageUtil.change2jpg(file);
             ImageIO.write(img, "jpg", file);
         }
-        return "redirect:/admin_category_list";
+        return c;
     }
 }
