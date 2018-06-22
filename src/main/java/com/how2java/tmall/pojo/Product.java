@@ -20,6 +20,15 @@ public class Product {
     private Date createDate;
     //非数据库字段
     private Category category;
+    private ProductImage productImage;
+
+    public ProductImage getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(ProductImage productImage) {
+        this.productImage = productImage;
+    }
 
     public Category getCategory() {
         return category;
